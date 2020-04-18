@@ -11,4 +11,4 @@ CLIENT_PLAYSOUND_FILE="https://taira-komori.jpn.org/sound/game01/crrect_answer3.
 
 CLIENT_GPIO_POWER="17"
 
-exit 0
+return 0

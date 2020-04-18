@@ -16,4 +16,4 @@ fi
 
 mpg321 "./${FILENAME}"
 
-exit 0
+return 0

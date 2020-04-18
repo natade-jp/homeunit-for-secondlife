@@ -7,4 +7,4 @@ cd `dirname $0`
 
 ./powerSwitch.sh ${CLIENT_GPIO_POWER} remove
 
-exit 0
+return 0

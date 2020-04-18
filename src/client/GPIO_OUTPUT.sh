@@ -99,4 +99,4 @@ if test $? -ne 0; then
 	return 0
 fi
 
-exit 0
+return 0

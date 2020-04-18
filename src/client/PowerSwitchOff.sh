@@ -7,4 +7,4 @@ cd `dirname $0`
 
 ./GPIO_OUTPUT.sh ${CLIENT_GPIO_POWER} low
 
-exit 0
+return 0
