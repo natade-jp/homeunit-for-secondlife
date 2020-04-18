@@ -2,120 +2,48 @@ const File = require("../lib/File.js");
 const env = File.getEnvironmentFile("../environment.sh");
 const exec = require("child_process").exec;
 
+// @ts-ignore
 const client_port = parseFloat(env["CLIENT_PORT"]);
 
-// jsƒtƒ@ƒCƒ‹‚ª’u‚¢‚Ä‚ ‚éêŠ
+// jsãƒ•ã‚¡ã‚¤ãƒ«ãŒç½®ã„ã¦ã‚ã‚‹å ´æ‰€
 const curdir = __dirname;
 
-// ‰¹‚ğ–Â‚ç‚·ƒNƒ‰ƒX
-class PlaySound {
-	constructor() {
-		this.start_time_ms	= 0;
-		this.sound_time_ms	= 5000;
-	}
-	play() {
-		// 5•bŠÔ‚ÍŸ‚Ì–Â“®‚ğ‚µ‚È‚¢B
-		const now_time_ms = new Date().getTime();
-		const delta_time_ms = now_time_ms - this.start_time_ms;
-		if(delta_time_ms >= this.sound_time_ms) {
-			exec(curdir + "/playSound.sh");
-			this.start_time_ms = new Date().getTime();
-		}
-	}
-}
+const PowerSwitch = require("./PowerSwitch.js");
+const PlaySound = require("./PlaySound.js");
 
-// ON/OFF—p‚ÌƒLƒ…[B–³‘Ê‚É‚½‚Ü‚Á‚Ä‚¢‚éê‡‚Í‰ğœ‚·‚éB
-class BooleanQueue {
+/**
+ * API
+ * @typedef {Object} APIObject
+ * @property {string} name é–¢æ•°å
+ * @property {string} [type] å¼•æ•°
+ * @property {function} start å‘¼ã°ã‚ŒãŸã¨ãã«å®Ÿè¡Œã™ã‚‹
+ */
 
-	constructor() {
-		this.queue = [];
-	}
-
-	enqueue(x) {
-		if(this.queue.length === 0) {
-			this.queue.push(x);
-			return;
-		}
-		// ÅŒã‚ÉÏ‚ñ‚¾‚à‚Ì‚ªx‚Ìê‡‚Í‚Â‚Ü‚È‚¢
-		if(x[this.queue.length - 1] === x) {
-			return;
-		}
-		this.queue.push(x);
-		// Å‰‚ª true false true ‚È‚ç true ‚É‚Ü‚Æ‚ß‚é 
-		// Å‰‚ª false true false ‚È‚ç false ‚É‚Ü‚Æ‚ß‚é 
-		if(this.queue.length >= 3) {
-			if(this.queue[0] === this.queue[2]) {
-				// ã‚©‚ç2ŒÂæ‚èo‚·
-				this.queue.pop();
-				this.queue.pop();
-			}
-		}
-	}
-
-	dequeue() {
-		if(this.queue.length === 0) {
-			return null;
-		}
-		return this.queue.shift();
-	}
-}
-
-// “dŒ¹§ŒäŒnƒNƒ‰ƒX
-class PowerControl {
-	
-	constructor() {
-		const that = this;
-		this.queue = new BooleanQueue();
-		const anzen_off_time_ms	= 60 * 60 * 1000;
-		let last_on_time_ms	= 0;
-		let is_on = false;
-		const interval = function() {
-			{
-				const now_time_ms = new Date().getTime();
-				const delta_time_ms = now_time_ms - last_on_time_ms;
-				// ON‚Ì‚Ü‚ÜˆÀ‘SŠÔ‚ğ‰ß‚¬‚é‚ÆAOFF‚É‚È‚é
-				if(is_on && (delta_time_ms >= anzen_off_time_ms)) {
-					that.off();
-				}
-			}
-			{
-				const data = that.queue.dequeue();
-				if(data === null) {
-					return;
-				}
-				is_on = data;
-				if(is_on) {
-					exec(curdir + "/powerSwitchOn.sh");
-					last_on_time_ms = new Date().getTime();
-				}
-				else {
-					exec(curdir + "/powerSwitchOff.sh");
-				}
-			}
-		};
-		this.timer = setInterval(interval, 5000);
-	}
-
-	on() {
-		this.queue.enqueue(true);
-	}
-
-	off() {
-		this.queue.enqueue(false);
-	}
-}
-
-// ƒT[ƒo[—pƒNƒ‰ƒX
+/**
+ * ã‚µãƒ¼ãƒãƒ¼ç”¨ã‚¯ãƒ©ã‚¹
+ */
 class WebServer {
 
+	/**
+	 * @param {number} port 
+	 */
 	constructor(port) {
 		this.port = port;
 		this.http = require("http");
 		this.url = require("url");
 		this.server = this.http.createServer();
+
+		/**
+		 * @type {APIObject[]}
+		 */
 		this.function_map = [];
 
 		const that = this;
+
+		/**
+		 * @param {*} req 
+		 * @param {*} res 
+		 */
 		const onRequest = function(req, res) {
 			const url_parse = that.url.parse(req.url, true);
 			res.writeHead(200, {"Content-Type" : "text/plain"});
@@ -129,10 +57,17 @@ class WebServer {
 		this.server.listen(this.port);
 	}
 
+	/**
+	 * @param {APIObject} function_data 
+	 */
 	addFunction(function_data) {
 		this.function_map.push(function_data);
 	}
 
+	/**
+	 * @param {string} name 
+	 * @param {import("querystring").ParsedUrlQuery} query 
+	 */
 	analysis(name, query) {
 		if(name === "favicon.ico") {
 			return 0;
@@ -151,10 +86,7 @@ class WebServer {
 	}
 }
 
-// ‹N“®‚ÍGPIO—p‚Ìƒtƒ@ƒCƒ‹‚ª‚È‚¢ó‘Ô‚É‚·‚éB
-exec(curdir + "/powerSwitchRemove.sh");
-
-// WebƒT[ƒo[ì¬
+// Webã‚µãƒ¼ãƒãƒ¼ä½œæˆ
 const server = new WebServer(client_port);
 
 const playsound = new PlaySound();
@@ -167,7 +99,7 @@ server.addFunction(
 	}
 );
 
-const power = new PowerControl();
+const power = new PowerSwitch();
 server.addFunction(
 	{
 		name : "power",

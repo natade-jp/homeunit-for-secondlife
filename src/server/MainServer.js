@@ -1,6 +1,11 @@
+//@ts-check
+
 const File = require("../lib/File.js");
 const env = File.getEnvironmentFile("../environment.sh");
+
+// @ts-ignore
 const client_address = "http://" + env["CLIENT_ADDRESS"] + ":" + env["CLIENT_PORT"] + "/";
+// @ts-ignore
 const server_port = parseFloat(env["SERVER_PORT"]);
 
 const exec = require("child_process").exec;
@@ -8,6 +13,10 @@ const http = require("http");
 const url = require("url");
 const server = http.createServer();
 
+/**
+ * @param {string} name 
+ * @param {import("querystring").ParsedUrlQuery} query 
+ */
 const analysis = function(name, query) {
 	if(name === "favicon.ico") {
 		return 0;
@@ -26,6 +35,10 @@ const analysis = function(name, query) {
 	return 0;
 };
 
+/**
+ * @param {*} req 
+ * @param {*} res 
+ */
 const onRequest = function(req, res) {
 	const url_parse = url.parse(req.url, true);
 	res.writeHead(200, {"Content-Type" : "text/plain"});
