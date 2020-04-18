@@ -5,7 +5,7 @@ SERVER_PORT="5050"
 CLIENT_ADDRESS="192.168.11.201"
 CLIENT_PORT="62620"
 
-# –³—¿Œø‰Ê‰¹‚Å—V‚Ú‚¤I
+# ç„¡æ–™åŠ¹æœéŸ³ã§éŠã¼ã†ï¼
 # https://taira-komori.jpn.org/index.html
 CLIENT_PLAYSOUND_FILE="https://taira-komori.jpn.org/sound/game01/crrect_answer3.mp3"
 
