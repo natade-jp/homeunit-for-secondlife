@@ -1,25 +1,25 @@
 #!/bin/sh
 
-# “ñd‹N“®–h~
+# äºŒé‡èµ·å‹•é˜²æ­¢
 pid=$$
 filepath=$0
 if test $pid != `pgrep -fo "${filepath}"` ; then
 	return 1
 fi
 
-# GPIO‚ğg—p‚Å‚«‚é‚æ‚¤‚É‚·‚é
+# GPIOã‚’ä½¿ç”¨ã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹
 setupGPIO() {
 	local gpio_port=${1}
 	local gpio_direction=${2}
 	local gpio_directory=/sys/class/gpio/gpio${gpio_port}
 	
-	# ˆø”ƒ`ƒFƒbƒN
+	# å¼•æ•°ãƒã‚§ãƒƒã‚¯
 	if test "${gpio_direction}" != "in" -a "${gpio_direction}" != "out"; then
 		echo "error"
 		return 1
 	fi
 	
-	# ƒtƒ@ƒCƒ‹‚ª‚È‚¯‚ê‚Îì¬
+	# ãƒ•ã‚¡ã‚¤ãƒ«ãŒãªã‘ã‚Œã°ä½œæˆ
 	if test ! -d "${gpio_directory}"; then
 		echo "${gpio_port}" > "/sys/class/gpio/export"
 		sleep 0.2
@@ -30,12 +30,12 @@ setupGPIO() {
 	return 0
 }
 
-# GPIO‚ğœ‹‚·‚é
+# GPIOã‚’é™¤å»ã™ã‚‹
 removeGPIO() {
 	local gpio_port=${1}
 	local gpio_directory=/sys/class/gpio/gpio${gpio_port}
 	
-	# ƒtƒ@ƒCƒ‹‚ª‚ ‚ê‚Îíœì¬
+	# ãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚ã‚Œã°å‰Šé™¤ä½œæˆ
 	if test -d "${gpio_directory}"; then
 		echo "${gpio_port}" > "/sys/class/gpio/unexport"
 		sleep 0.2
@@ -44,19 +44,19 @@ removeGPIO() {
 	return 0
 }
 
-# GPIO‚Ìo—Í‚ğ•ÏX‚·‚é
+# GPIOã®å‡ºåŠ›ã‚’å¤‰æ›´ã™ã‚‹
 outputGPIO() {
 	local gpio_port=${1}
 	local gpio_output=${2}
 	local gpio_directory=/sys/class/gpio/gpio${gpio_port}
 	
-	# ˆø”ƒ`ƒFƒbƒN
+	# å¼•æ•°ãƒã‚§ãƒƒã‚¯
 	if test "${gpio_output}" != "high" -a "${gpio_output}" != "low"; then
 		echo "error"
 		return 1
 	fi
 	
-	# ƒtƒ@ƒCƒ‹‚ª‚È‚¯‚ê‚ÎƒGƒ‰[
+	# ãƒ•ã‚¡ã‚¤ãƒ«ãŒãªã‘ã‚Œã°ã‚¨ãƒ©ãƒ¼
 	if test ! -d "${gpio_directory}"; then
 		echo "error"
 		return 1
@@ -71,29 +71,29 @@ outputGPIO() {
 	return 0
 }
 
-# ˆø”‚ğ‘ã“ü
+# å¼•æ•°ã‚’ä»£å…¥
 gpio_port=$1
 gpio_output=$2
 
-# ˆø”ƒ`ƒFƒbƒN
+# å¼•æ•°ãƒã‚§ãƒƒã‚¯
 if test "${gpio_output}" != "high" -a "${gpio_output}" != "low" -a "${gpio_output}" != "remove"; then
 	echo "error"
 	return 1
 fi
 
-# œ‹‚·‚é
+# é™¤å»ã™ã‚‹
 if test "${gpio_output}" = "remove"; then
 	removeGPIO ${gpio_port}
 	return 0
 fi
 
-# GPIO‚ğo—Íƒ|[ƒg‚É‚·‚é
+# GPIOã‚’å‡ºåŠ›ãƒãƒ¼ãƒˆã«ã™ã‚‹
 setupGPIO ${gpio_port} out
 if test $? -ne 0; then
 	return 0
 fi
 
-# o—Íƒ|[ƒg‚Ì’l‚ğİ’è‚·‚é
+# å‡ºåŠ›ãƒãƒ¼ãƒˆã®å€¤ã‚’è¨­å®šã™ã‚‹
 outputGPIO ${gpio_port} ${gpio_output}
 if test $? -ne 0; then
 	return 0

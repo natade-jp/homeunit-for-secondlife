@@ -263,6 +263,7 @@ class File {
 			if(/^".*"$/.test(data)) {
 				data = data.replace(/^"(.*)"$/, "$1");
 			}
+			// @ts-ignore
 			output[name] = data;
 		}
 		return output;

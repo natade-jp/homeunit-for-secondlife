@@ -1,11 +1,11 @@
 #!/bin/sh
 
-# シェルスクリプトがある場所をカレントディレクトリにする
+# 繧ｷ繧ｧ繝ｫ繧ｹ繧ｯ繝ｪ繝励ヨ縺後≠繧句ｴ謇繧偵き繝ｬ繝ｳ繝医ョ繧｣繝ｬ繧ｯ繝医Μ縺ｫ縺吶ｋ
 cd `dirname $0`
 
 . "../environment.sh"
 
-# 音を再生する
+# 髻ｳ繧貞�咲函縺吶ｋ
 amixer cset numid=3 1
 
 FILENAME=`basename "${CLIENT_PLAYSOUND_FILE}"`

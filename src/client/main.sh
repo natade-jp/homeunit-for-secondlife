@@ -1,9 +1,9 @@
 #!/bin/sh
 
-# ƒJƒŒƒ“ƒgƒfƒBƒŒƒNƒgƒŠ‚ðÝ’è
+# ã‚«ãƒ¬ãƒ³ãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’è¨­å®š
 cd `dirname $0`
 
-# ƒT[ƒo[‚ð‹N“®‚³‚¹‚é
+# ã‚µãƒ¼ãƒãƒ¼ã‚’èµ·å‹•ã•ã›ã‚‹
 node "./RoomServer.js" &
 
 exit 0
