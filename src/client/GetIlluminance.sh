@@ -28,15 +28,15 @@ i2cset -y 1 0x23 0x01 c
 # 1回測定 H-Resolutuion Mode 0010_0000 (120ms)
 # 測定終了後パワーダウン状態になる
 i2cset -y 1 0x23 0x20 c
-sleepenh 0.2 > /dev/null
+sleep 0.2
 
 HEX_2BYTE=`i2cget -y 1 0x23 0x00 w | tr "a-z" "A-Z"`
-HEX_1=`echo ${HEX_2BYTE} | cut -c 3-4`
-HEX_2=`echo ${HEX_2BYTE} | cut -c 5-6`
-DEC=`echo "obase=10;ibase=16;${HEX_2}${HEX_1}" | bc`
+LOW_BYTE=`echo ${HEX_2BYTE} | cut -c 3-4`
+HIGH_BYTE=`echo ${HEX_2BYTE} | cut -c 5-6`
+DEC=`echo "obase=10;ibase=16;${HIGH_BYTE}${LOW_BYTE}" | bc`
 
 IL_F=`echo "scale=1;${DEC}/1.2" | bc`
-IL_I=`expr ${DEC} / 1`
+IL_I=`echo ${IL_F} | sed s/\.[0-9]*$//g`
 
 echo "${IL_F}"
 
