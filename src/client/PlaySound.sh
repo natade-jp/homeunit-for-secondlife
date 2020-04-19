@@ -14,6 +14,6 @@ if [ ! -e "./${FILENAME}" ]; then
 	wget "${CLIENT_PLAYSOUND_FILE}"
 fi
 
-mpg321 "./${FILENAME}"
+sox "./${FILENAME}" -d > /dev/null
 
 return 0
