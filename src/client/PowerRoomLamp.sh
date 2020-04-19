@@ -5,6 +5,13 @@ cd `dirname $0`
 
 . "../environment.sh"
 
-./GPIO.sh ${CLIENT_GPIO_POWER} output low
+switchIR() {
+    ./GPIO.sh ${CLIENT_GPIO_IR} output high
+    sleep 0.5
+    ./GPIO.sh ${CLIENT_GPIO_IR} output low
+	return 0
+}
+
+switchIR
 
 return 0

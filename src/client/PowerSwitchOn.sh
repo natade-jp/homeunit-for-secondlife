@@ -5,6 +5,6 @@ cd `dirname $0`
 
 . "../environment.sh"
 
-./GPIO_OUTPUT.sh ${CLIENT_GPIO_POWER} high
+./GPIO.sh ${CLIENT_GPIO_POWER} output high
 
 return 0
