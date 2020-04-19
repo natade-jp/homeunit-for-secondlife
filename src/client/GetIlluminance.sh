@@ -36,7 +36,7 @@ HIGH_BYTE=`echo ${HEX_2BYTE} | cut -c 5-6`
 DEC=`echo "obase=10;ibase=16;${HIGH_BYTE}${LOW_BYTE}" | bc`
 
 IL_F=`echo "scale=1;${DEC}/1.2" | bc`
-IL_I=`echo ${IL_F} | sed s/\.[0-9]*$//g`
+IL_I=`echo ${IL_F} | sed s/\.[0-9]+$//g`
 
 echo "${IL_F}"
 

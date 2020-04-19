@@ -26,7 +26,7 @@ LOW_BYTE=`echo ${HEX_2BYTE} | cut -c 3-4`
 HIGH_BYTE=`echo ${HEX_2BYTE} | cut -c 5-6`
 DEC=`echo "obase=10;ibase=16;${HIGH_BYTE}${LOW_BYTE}" | bc`
 TEMP_F=`echo "scale=1;${DEC}/128.0" | bc`
-TEMP_I=`echo ${TEMP_F} | sed s/\.[0-9]*$//g`
+TEMP_I=`echo ${TEMP_F} | sed s/\.[0-9]+$//g`
 
 echo "${TEMP_F}"
 
