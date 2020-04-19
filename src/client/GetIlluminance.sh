@@ -34,9 +34,12 @@ HEX_2BYTE=`i2cget -y 1 0x23 0x00 w | tr "a-z" "A-Z"`
 LOW_BYTE=`echo ${HEX_2BYTE} | cut -c 3-4`
 HIGH_BYTE=`echo ${HEX_2BYTE} | cut -c 5-6`
 DEC=`echo "obase=10;ibase=16;${HIGH_BYTE}${LOW_BYTE}" | bc`
-
 IL_F=`echo "scale=1;${DEC}/1.2" | bc`
-IL_I=`echo ${IL_F} | sed s/\.[0-9]+$//g`
+IL_I=`echo ${IL_F} | sed -r "s/\.[0-9]+//"`
+if [ -z "${IL_I}" ]; then
+	IL_F="0${IL_F}"
+	IL_I="0"
+fi
 
 echo "${IL_F}"
 

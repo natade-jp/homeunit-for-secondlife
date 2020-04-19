@@ -10,5 +10,7 @@ CLIENT_PORT="62620"
 CLIENT_PLAYSOUND_FILE="https://taira-komori.jpn.org/sound/game01/crrect_answer3.mp3"
 
 CLIENT_GPIO_POWER="17"
+CLIENT_GPIO_IR="13"
+CLIENT_GPIO_MOTION="19"
 
 return 0
