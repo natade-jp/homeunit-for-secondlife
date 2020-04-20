@@ -1,5 +1,3 @@
-//@ts-check
-
 const File = require("../lib/File.js");
 const env = File.getEnvironmentFile("../environment.sh");
 
@@ -14,10 +12,11 @@ const url = require("url");
 const server = http.createServer();
 
 /**
+ * @param {string} ip
  * @param {string} name 
  * @param {import("querystring").ParsedUrlQuery} query 
  */
-const analysis = function(name, query) {
+const analysis = function(ip, name, query) {
 	if(name === "favicon.ico") {
 		return 0;
 	}
@@ -36,15 +35,16 @@ const analysis = function(name, query) {
 };
 
 /**
- * @param {*} req 
- * @param {*} res 
+ * @param {import("http").IncomingMessage} req 
+ * @param {import("http").ServerResponse} res 
  */
 const onRequest = function(req, res) {
+	const ip = (req.connection.remoteAddress || req.socket.remoteAddress).replace(/.+:/g, "");
 	const url_parse = url.parse(req.url, true);
 	res.writeHead(200, {"Content-Type" : "text/plain"});
 	const filename = url_parse.path.split(/[\\/?#]/);
 	if(filename.length > 1) {
-		res.write(""+ analysis(filename[1], url_parse.query));
+		res.write(""+ analysis(ip, filename[1], url_parse.query));
 	}
 	res.end();
 };

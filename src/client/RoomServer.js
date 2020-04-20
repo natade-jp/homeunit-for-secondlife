@@ -41,15 +41,16 @@ class WebServer {
 		const that = this;
 
 		/**
-		 * @param {*} req 
-		 * @param {*} res 
+		 * @param {import("http").IncomingMessage} req 
+		 * @param {import("http").ServerResponse} res 
 		 */
 		const onRequest = function(req, res) {
+			const ip = (req.connection.remoteAddress || req.socket.remoteAddress).replace(/.+:/g, "");
 			const url_parse = that.url.parse(req.url, true);
 			res.writeHead(200, {"Content-Type" : "text/plain"});
 			const filename = url_parse.path.split(/[\\/?#]/);
 			if(filename.length > 1) {
-				res.write(""+ that.analysis(filename[1], url_parse.query));
+				res.write(""+ that.analysis(ip, filename[1], url_parse.query));
 			}
 			res.end();
 		};
@@ -65,10 +66,11 @@ class WebServer {
 	}
 
 	/**
+	 * @param {string} ip
 	 * @param {string} name 
 	 * @param {import("querystring").ParsedUrlQuery} query 
 	 */
-	analysis(name, query) {
+	analysis(ip, name, query) {
 		if(name === "favicon.ico") {
 			return 0;
 		}
