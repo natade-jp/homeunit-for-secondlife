@@ -96,9 +96,9 @@ inputGPIO() {
 }
 
 # 引数を代入
-gpio_port=$1
-gpio_type=$2
-gpio_output=$3
+gpio_port=`echo "$1" | tr "A-Z" "a-z"`
+gpio_type=`echo "$2" | tr "A-Z" "a-z"`
+gpio_output=`echo "$3" | tr "A-Z" "a-z"`
 
 
 # 除去する

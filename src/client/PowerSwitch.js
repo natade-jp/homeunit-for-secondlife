@@ -76,11 +76,11 @@ class PowerSwitch {
 				}
 				is_on = data;
 				if(is_on) {
-					exec(curdir + "/PowerSwitchOn.sh");
+					exec(curdir + "/PowerSwitch.sh on");
 					last_on_time_ms = new Date().getTime();
 				}
 				else {
-					exec(curdir + "/PowerSwitchOff.sh");
+					exec(curdir + "/PowerSwitch.sh off");
 				}
 			}
 		};
@@ -97,6 +97,6 @@ class PowerSwitch {
 }
 
 // 起動時はGPIO用のファイルがない状態にする。
-exec(curdir + "/PowerSwitchRemove.sh");
+exec(curdir + "/PowerSwitch.sh remove");
 
 module.exports = PowerSwitch;
