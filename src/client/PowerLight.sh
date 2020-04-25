@@ -44,8 +44,19 @@ elif [ "${type}" = "off" ] && [ `isLight` = "1" ] ; then
 	switchIR
 	switchIR
 	switchIR
+# 今の状態だけ調べる
 elif [ "${type}" = "ison" ] ; then
 	isLight
+# 現在の状態に合わせて反転させる
+elif [ "${type}" = "onoff" ] ; then
+	if [ `isLight` = "0" ] ; then
+		switchIR
+		sleep 0.5
+	else
+		switchIR
+		switchIR
+		switchIR
+	fi
 fi
 
 return 0

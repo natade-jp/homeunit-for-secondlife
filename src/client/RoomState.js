@@ -4,99 +4,64 @@ const env = File.getEnvironmentFile("../environment.sh");
 // @ts-ignore
 const server_address = "http://" + env["SERVER_ADDRESS"] + ":" + env["SERVER_PORT"] + "/";
 // @ts-ignore
-const timer_sec = parseFloat(env["CLIENT_INTERVAL_TIMER_SEC"]);
-const exec = require("child_process").exec;
+const timer_ms = parseFloat(env["CLIENT_INTERVAL_TIMER_SEC"]) * 1000;
 
-// jsファイルが置いてある場所
-const curdir = __dirname;
+const SendData = require("../lib/SendData.js");
+const GetMotion = require("./GetMotion.js");
+const ExecShellScript = require("./ExecShellScript.js");
 
-/**
- * 部屋の状態を調査する
- */
-class GetStateForShellScript {
+const to_server = new SendData(server_address);
 
-	/**
-	 * @param {string} script_name 
-	 * @param {function(number|undefined): void} callback 
-	 */
-	constructor(script_name, callback) {
-		this.script_path = curdir + "/" + script_name;
-
-		/**
-		 * @param {import("child_process").ExecException | null} error 
-		 * @param {string} stdout 
-		 * @param {string} stderr 
-		 */
-		this.exec_callback = function(error, stdout, stderr) {
-			if (error !== null) {
-				callback(undefined);
-			}
-			else {
-				callback(parseFloat(stdout.replace(/^[\r\n ]*|[\r\n ]*$/g, "")));
-			}
-		}
-	}
-
-	exec() {
-		exec(this.script_path, this.exec_callback);
-	}
-}
-
-let value_light = NaN;
+let light_value = NaN;
 /**
  * 部屋の明るさ
  */
-const GetLight = new GetStateForShellScript(
-	"GetIlluminance.sh",
+const get_light = new ExecShellScript(
+	"PowerLight.sh",
 	function callback(new_value) {
-		if(new_value === undefined) {
+		if(isNaN(new_value)) {
 			return;
 		}
-		const value_light_now = new_value > 0 ? 1 : 0;
-		if(value_light === value_light_now) {
+		if(light_value === new_value) {
 			return;
 		}
-		value_light = value_light_now;
-//		exec("curl " + server_address + "RoomState?type=light&value=" + value_light);
-		console.log("curl " + server_address + "RoomState?type=light&value=" + value_light);
+		light_value = new_value;
+		to_server.send("RoomState?type=light&value=" + light_value);
 	}
 );
 
-let value_motion = NaN;
+const motion_obj = new GetMotion();
+let motion_value = NaN;
 /**
  * 動体検知
  */
-const GetMotion = new GetStateForShellScript(
-	"GetMotion.sh",
-	function callback(new_value) {
-		if(new_value === undefined) {
-			return;
-		}
-		if(value_motion === new_value) {
-			return;
-		}
-		value_motion = new_value;
-//		exec("curl " + server_address + "RoomState?type=motion&value=" + value_motion);
-		console.log("curl " + server_address + "RoomState?type=motion&value=" + value_motion);
+const get_motion = function() {
+	const new_value = motion_obj.getValue();
+	if(isNaN(new_value)) {
+		return;
 	}
-);
+	if(motion_value === new_value) {
+		return;
+	}
+	motion_value = new_value;
+	to_server.send("RoomState?type=motion&value=" + motion_value);
+};
 
-let value_temperature = NaN;
+let temperature_value = NaN;
 /**
  * 気温
  */
-const GetTemperature = new GetStateForShellScript(
+const get_temperature = new ExecShellScript(
 	"GetTemperature.sh",
 	function callback(new_value) {
-		if(new_value === undefined) {
+		if(isNaN(new_value)) {
 			return;
 		}
-		if(value_temperature === new_value) {
+		if(temperature_value === new_value) {
 			return;
 		}
-		value_temperature = new_value;
-//		exec("curl " + server_address + "RoomState?type=temperature&value=" + value_temperature);
-		console.log("curl " + server_address + "RoomState?type=temperature&value=" + value_temperature);
+		temperature_value = new_value;
+		to_server.send("RoomState?type=temperature&value=" + temperature_value);
 	}
 );
 
@@ -104,9 +69,9 @@ const GetTemperature = new GetStateForShellScript(
  * 定期実行用関数
  */
 const interval_function = function() {
-	GetLight.exec();
-	GetMotion.exec();
-	GetTemperature.exec();
+	get_light.exec("ison");
+	get_motion();
+	get_temperature.exec();
 }
 
 /**
@@ -123,7 +88,7 @@ class RoomState {
 	 */
 	start() {
 		if(this.interval_timer === null) {
-			this.interval_timer = setInterval(interval_function, timer_sec);
+			this.interval_timer = setInterval(interval_function, timer_ms);
 		}
 	}
 

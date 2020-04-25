@@ -1,9 +1,5 @@
-//@ts-check
-
-const exec = require("child_process").exec;
-
-// jsファイルが置いてある場所
-const curdir = __dirname;
+const ExecShellScript = require("./ExecShellScript.js");
+const power_swtich = new ExecShellScript("PowerSwitch.sh");
 
 /**
  * ON/OFF用のキュー。無駄にたまっている場合は解除する。
@@ -76,11 +72,11 @@ class PowerSwitch {
 				}
 				is_on = data;
 				if(is_on) {
-					exec(curdir + "/PowerSwitch.sh on");
+					power_swtich.exec("on");
 					last_on_time_ms = new Date().getTime();
 				}
 				else {
-					exec(curdir + "/PowerSwitch.sh off");
+					power_swtich.exec("off");
 				}
 			}
 		};
@@ -97,6 +93,6 @@ class PowerSwitch {
 }
 
 // 起動時はGPIO用のファイルがない状態にする。
-exec(curdir + "/PowerSwitch.sh remove");
+power_swtich.exec("remove");
 
 module.exports = PowerSwitch;

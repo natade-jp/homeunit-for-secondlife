@@ -8,13 +8,15 @@ const server_port = parseFloat(env["SERVER_PORT"]);
 
 // jsファイルが置いてある場所
 const curdir = __dirname;
-
 // @ts-ignore
 const file_room_light = curdir + "/" + env["SERVER_FILE_ROOM_LIGHT"];
 // @ts-ignore
 const file_room_motion = curdir + "/" + env["SERVER_FILE_ROOM_MOTION"];
 // @ts-ignore
 const file_room_temperature = curdir + "/" + env["SERVER_FILE_ROOM_TEMPERATURE"];
+
+const SendData = require("../lib/SendData.js");
+const to_client = new SendData(client_address);
 
 const exec = require("child_process").exec;
 const http = require("http");
@@ -32,15 +34,19 @@ const analysis = function(ip, name, query) {
 	}
 	if(name === "SecondLife") {
 		if(query["type"] === "playSound") {
-			exec("curl " + client_address + "playSound");
+			to_client.send("playSound");
 		}
 		else if(query["type"] === "powerOn") {
-			exec("curl " + client_address + "power?type=on");
+			to_client.send("power?type=on");
 		}
 		else if(query["type"] === "powerOff") {
-			exec("curl " + client_address + "power?type=off");
+			to_client.send("power?type=off");
+		}
+		else if(query["type"] === "lightOnOff") {
+			to_client.send("light?type=onoff");
 		}
 	}
+	// ローカルネットワーク
 	if(/^192\.168\./.test(ip)) {
 		if((name === "RoomState") && query["value"] !== undefined) {
 			if(query["type"] === "light") {

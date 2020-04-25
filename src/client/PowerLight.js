@@ -1,24 +1,23 @@
 const ExecShellScript = require("./ExecShellScript.js");
-const play_sound = new ExecShellScript("PlaySound.sh");
+const power_light = new ExecShellScript("PowerLight.sh");
 
-// 音を鳴らすクラス
+// 光をオン／オフするクラス
+class PowerLight {
 
-class PlaySound {
 	constructor() {
 		this.start_time_ms	= 0;
 		this.stop_time_ms	= 5000;
 	}
 
-	play() {
-		// 5秒間は次の鳴動をしない。
+	onoff() {
+		// 5秒間は無視する
 		const now_time_ms = new Date().getTime();
 		const delta_time_ms = now_time_ms - this.start_time_ms;
 		if(delta_time_ms >= this.stop_time_ms) {
-			play_sound.exec();
-			this.start_time_ms = new Date().getTime();
+			power_light.exec("onoff");
 		}
 	}
 
 }
 
-module.exports = PlaySound;
+module.exports = PowerLight;

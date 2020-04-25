@@ -5,6 +5,7 @@ const env = File.getEnvironmentFile("../environment.sh");
 const client_port = parseFloat(env["CLIENT_PORT"]);
 
 const PowerSwitch = require("./PowerSwitch.js");
+const PowerLight = require("./PowerLight.js");
 const PlaySound = require("./PlaySound.js");
 const RoomState = require("./RoomState.js");
 
@@ -97,7 +98,17 @@ server.addFunction(
 		}
 	}
 );
-
+const light = new PowerLight();
+server.addFunction(
+	{
+		name : "light",
+		type : "onoff",
+		start : function() {
+			console.log("onoff");
+			light.onoff();
+		}
+	}
+);
 const power = new PowerSwitch();
 server.addFunction(
 	{
