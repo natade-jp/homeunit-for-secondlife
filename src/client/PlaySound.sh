@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# 二重起動防止
+pid=$$
+filepath="${0}"
+if [ $pid != `pgrep -fo "/bin/sh ${filepath}"` ]; then
+	exit 1
+fi
+
 # シェルスクリプトがある場所をカレントディレクトリにする
 cd `dirname $0`
 
@@ -16,4 +23,4 @@ fi
 
 sox "./${FILENAME}" -d > /dev/null
 
-return 0
+exit 0

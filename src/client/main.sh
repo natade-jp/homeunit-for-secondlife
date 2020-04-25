@@ -5,5 +5,3 @@ cd `dirname $0`
 
 # サーバーを起動させる
 node "./RoomServer.js" &
-
-return 0

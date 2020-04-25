@@ -3,7 +3,7 @@
 # 二重起動防止
 pid=$$
 filepath="${0}"
-if [ $pid != `pgrep -fo "${filepath}"` ]; then
+if [ $pid != `pgrep -fo "/bin/sh ${filepath}"` ]; then
 	return 1
 fi
 

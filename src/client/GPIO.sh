@@ -1,12 +1,5 @@
 #!/bin/sh
 
-# 二重起動防止
-pid=$$
-filepath="${0}"
-if [ $pid != `pgrep -fo "${filepath}"` ]; then
-	return 1
-fi
-
 # GPIOを使用できるようにする
 setupGPIO() {
 	local gpio_port="${1}"
@@ -104,7 +97,7 @@ gpio_output=`echo "$3" | tr "A-Z" "a-z"`
 # 除去する
 if [ "${gpio_type}" = "remove" ]; then
 	removeGPIO ${gpio_port}
-	return 0
+	exit 0
 
 # 出力ポートの設定
 elif [ "${gpio_type}" = "output" ]; then
@@ -112,21 +105,21 @@ elif [ "${gpio_type}" = "output" ]; then
 	# 引数チェック
 	if [ "${gpio_output}" != "high" ] && [ "${gpio_output}" != "low" ]; then
 		echo "error"
-		return 1
+		exit 1
 	fi
 
 	# GPIOを出力ポートにする
 	setupGPIO ${gpio_port} output
 	if [ "${?}" != "0" ]; then
 		echo "error"
-		return 1
+		exit 1
 	fi
 
 	# 出力ポートの値を設定する
 	outputGPIO ${gpio_port} ${gpio_output}
 	if [ "${?}" != "0" ]; then
 		echo "error"
-		return 1
+		exit 1
 	fi
 	
 # 入力ポートの設定
@@ -136,22 +129,22 @@ elif [ "${gpio_type}" = "input" ]; then
 	setupGPIO ${gpio_port} input
 	if [ "${?}" != "0" ]; then
 		echo "error"
-		return 1
+		exit 1
 	fi
 
 	# 入力ポートの値を出力する
 	inputGPIO ${gpio_port}
 	if [ "${?}" != "0" ]; then
 		echo "error"
-		return 1
+		exit 1
 	fi
 
 else
 
 	# 引数チェック
 	echo "error"
-	return 1
+	exit 1
 
 fi
 
-return 0
+exit 0

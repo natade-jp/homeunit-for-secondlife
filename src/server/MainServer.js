@@ -6,6 +6,16 @@ const client_address = "http://" + env["CLIENT_ADDRESS"] + ":" + env["CLIENT_POR
 // @ts-ignore
 const server_port = parseFloat(env["SERVER_PORT"]);
 
+// jsファイルが置いてある場所
+const curdir = __dirname;
+
+// @ts-ignore
+const file_room_light = curdir + "/" + env["SERVER_FILE_ROOM_LIGHT"];
+// @ts-ignore
+const file_room_motion = curdir + "/" + env["SERVER_FILE_ROOM_MOTION"];
+// @ts-ignore
+const file_room_temperature = curdir + "/" + env["SERVER_FILE_ROOM_TEMPERATURE"];
+
 const exec = require("child_process").exec;
 const http = require("http");
 const url = require("url");
@@ -29,6 +39,19 @@ const analysis = function(ip, name, query) {
 		}
 		else if(query["type"] === "powerOff") {
 			exec("curl " + client_address + "power?type=off");
+		}
+	}
+	if(/^192\.168\./.test(ip)) {
+		if((name === "RoomState") && query["value"] !== undefined) {
+			if(query["type"] === "light") {
+				exec("echo " + query["value"] + " > " + file_room_light);
+			}
+			else if(query["type"] === "motion") {
+				exec("echo " + query["value"] + " > " + file_room_motion);
+			}
+			else if(query["type"] === "temperature") {
+				exec("echo " + query["value"] + " > " + file_room_temperature);
+			}
 		}
 	}
 	return 0;

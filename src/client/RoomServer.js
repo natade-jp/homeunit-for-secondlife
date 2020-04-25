@@ -1,15 +1,12 @@
 const File = require("../lib/File.js");
 const env = File.getEnvironmentFile("../environment.sh");
-const exec = require("child_process").exec;
 
 // @ts-ignore
 const client_port = parseFloat(env["CLIENT_PORT"]);
 
-// jsファイルが置いてある場所
-const curdir = __dirname;
-
 const PowerSwitch = require("./PowerSwitch.js");
 const PlaySound = require("./PlaySound.js");
+const RoomState = require("./RoomState.js");
 
 /**
  * API
@@ -122,3 +119,7 @@ server.addFunction(
 		}
 	}
 );
+
+// 部屋の状態を監視開始
+const room_state = new RoomState();
+room_state.start();
