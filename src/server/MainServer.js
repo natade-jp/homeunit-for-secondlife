@@ -6,7 +6,7 @@ const client_address = "http://" + env["CLIENT_ADDRESS"] + ":" + env["CLIENT_POR
 // @ts-ignore
 const server_port = parseFloat(env["SERVER_PORT"]);
 
-// jsƒtƒ@ƒCƒ‹‚ª’u‚¢‚Ä‚ ‚éêŠ
+// jsãƒ•ã‚¡ã‚¤ãƒ«ãŒç½®ã„ã¦ã‚ã‚‹å ´æ‰€
 const curdir = __dirname;
 
 // @ts-ignore
