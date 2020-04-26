@@ -11,7 +11,7 @@ light(integer is_on) {
 		llSetPrimitiveParams([
 			PRIM_FULLBRIGHT, 4, TRUE,
 			PRIM_GLOW, 4, 0.01,
-			PRIM_POINT_LIGHT, TRUE, <1, 0.8431, 0.6667>, 1.0, 5.0, 0.5
+			PRIM_POINT_LIGHT, TRUE, <1, 0.8431, 0.6667>, 1.0, 8.0, 0.5
 			]);
 	}
 	else {
@@ -21,7 +21,7 @@ light(integer is_on) {
 		llSetPrimitiveParams([
 			PRIM_FULLBRIGHT, 4, FALSE,
 			PRIM_GLOW, 4, 0.00,
-			PRIM_POINT_LIGHT, FALSE, ZERO_VECTOR, 1.0, 5.0, 0.5
+			PRIM_POINT_LIGHT, FALSE, ZERO_VECTOR, 1.0, 8.0, 0.5
 			]);
 
 	}
