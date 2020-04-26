@@ -43,15 +43,20 @@ class File {
 	/**
 	 * BOMあり／なしに関わらず、UTF-8のテキストを読み込む
 	 * @param {string} path
-	 * @returns {string} テキストデータ 
+	 * @returns {string|null} テキストデータ 
 	 */
 	static loadTextFile(path) {
-		const text = fs.readFileSync(path, "utf-8");
-		if (text.length > 0 && text.charAt(0) === "\uFEFF") {
-			return text.substr(1);
+		if(File.isFile(path)) {
+			const text = fs.readFileSync(path, "utf-8");
+			if (text.length > 0 && text.charAt(0) === "\uFEFF") {
+				return text.substr(1);
+			}
+			else {
+				return text;
+			}
 		}
 		else {
-			return text;
+			return null;
 		}
 	}
 
