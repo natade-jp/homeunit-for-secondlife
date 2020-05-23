@@ -22,10 +22,10 @@ setupGPIO() {
 	# ファイルがなければ作成
 	if [ ! -d "${gpio_directory}" ]; then
 		echo "${gpio_port}" > "/sys/class/gpio/export"
-		sleep 0.2
+		sleep 0.5
 
 		echo "${gpio_direction}" > "${gpio_directory}/direction"
-		sleep 0.2
+		sleep 0.5
 	fi
 	
 	return 0
@@ -39,7 +39,7 @@ removeGPIO() {
 	# ファイルがあれば削除作成
 	if [ -d "${gpio_directory}" ]; then
 		echo "${gpio_port}" > "/sys/class/gpio/unexport"
-		sleep 0.2
+		sleep 0.5
 	fi
 	
 	return 0
